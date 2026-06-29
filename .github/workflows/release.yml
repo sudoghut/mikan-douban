@@ -1,0 +1,53 @@
+name: Release on version bump
+
+# 每次 push 到 master 且用户脚本有改动时触发：
+# 读取脚本头里的 @version，如果对应 tag 还不存在，就自动建一个 Release 并附上 .user.js。
+# 因此「发布新版本」= 改代码 + 抬高 @version + git push，其余全自动。
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - 'mikan-douban.user.js'
+  workflow_dispatch: {}   # 也可在 Actions 页面手动触发
+
+permissions:
+  contents: write          # 建 tag / Release 需要写权限
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # 取全部历史，便于判断 tag 是否已存在
+
+      - name: 从脚本头提取 @version
+        id: ver
+        run: |
+          VERSION=$(grep -oiP '@version\s+\K[0-9][\w.+-]*' mikan-douban.user.js | head -1)
+          if [ -z "$VERSION" ]; then
+            echo "::error::脚本头里没找到 @version"; exit 1
+          fi
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "检测到版本：$VERSION"
+
+      - name: 检查 tag 是否已存在
+        id: check
+        run: |
+          if git rev-parse "v${{ steps.ver.outputs.version }}" >/dev/null 2>&1; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+            echo "tag v${{ steps.ver.outputs.version }} 已存在，跳过建 Release（没抬版本号？）"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: 创建 Release 并附上脚本
+        if: steps.check.outputs.exists == 'false'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create "v${{ steps.ver.outputs.version }}" \
+            mikan-douban.user.js \
+            --title "v${{ steps.ver.outputs.version }}" \
+            --generate-notes

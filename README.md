@@ -24,7 +24,8 @@
 
 1. 安装用户脚本管理器：[Tampermonkey](https://www.tampermonkey.net/) 或 [Violentmonkey](https://violentmonkey.github.io/)。
 2. 安装本脚本：
-   - **(推荐)** 从 Greasy Fork 安装：*(发布后填入链接)*
+   - **(推荐)** 从 Greasy Fork 安装：<https://greasyfork.org/zh-CN/scripts/584821>
+   - 或从 [GitHub Releases](https://github.com/sudoghut/mikan-douban/releases/latest) 下载 `.user.js`。
    - 或手动：打开 [`mikan-douban.user.js`](./mikan-douban.user.js) 的 raw 文件，脚本管理器会自动识别并提示安装。
 3. 打开 [https://mikanani.me/](https://mikanani.me/) 即可看到每部番剧卡片上的「豆」徽标。
 

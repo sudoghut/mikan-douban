@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         蜜柑计划 → 豆瓣 链接
 // @namespace    https://github.com/sudoghut/mikan-douban
-// @version      0.2.3
+// @version      0.2.4
 // @description  在蜜柑计划首页为每部番剧优雅地附上一个跳转到豆瓣的链接（解析为 subject 直链，失败回退搜索）
 // @author       sudoghut
 // @license      MIT
